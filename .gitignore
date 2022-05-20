@@ -1,0 +1,8 @@
+*.o
+*.log
+*.aux
+*.out
+*tmp*
+*test*
+Homework/H*/ex*/ex*
+obj/
