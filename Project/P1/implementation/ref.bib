@@ -1,0 +1,40 @@
+@article{SHA,
+   title = {Federal information processing standards publication. : NO180 1993},
+   note = {102215427},
+   ISSN = {0038-1816},
+   year = {1993},
+   type = {Journal Article}
+}
+
+@inbook{HMAC,
+   author = {Bellare, Mihir and Canetti, Ran and Krawczyk, Hugo},
+   title = {Keying Hash Functions for Message Authentication},
+   publisher = {Berlin, Heidelberg: Springer Berlin Heidelberg},
+   address = {Berlin, Heidelberg},
+   pages = {1-15},
+   note = {This version of our paper has been truncated due to page limits. The full version is [3].},
+   abstract = {The use of cryptographic hash functions like MD5 or SHA-1 for message authentication has become a standard approach in many applications, particularly Internet security protocols. Though very easy to implement, these mechanisms are usually based on ad hoc techniques that lack a sound security analysis. We present new, simple, and practical constructions of message authentication schemes based on a cryptographic hash function. Our schemes, NMAC and HMAC, are proven to be secure as long as the underlying hash function has some reasonable cryptographic strengths. Moreover we show, in a quantitative way, that the schemes retain almost all the security of the underlying hash function. The performance of our schemes is essentially that of the underlying hash function. Moreover they use the hash function (or its compression function) as a black box, so that widely available library code or hardware can be used to implement them in a simple way, and replaceability of the underlying hash function is easily supported.},
+   ISBN = {0302-9743},
+   DOI = {10.1007/3-540-68697-5_1},
+   year = {2001},
+   type = {Book Section}
+}
+
+@inbook{Poly1305,
+   author = {Bernstein, D. J. and Gilbert, H. and Handschuh, H.},
+   title = {The Poly1305-AES message-authentication code},
+   publisher = {Berlin, Heidelberg: Springer},
+   address = {Berlin, Heidelberg},
+   pages = {32-49},
+   abstract = {Poly1305-AES is a state-of-the-art message-authentication code suitable for a wide variety of applications. Poly1305-AES computes a 16-byte authenticator of a variable-length message, using a 16-byte AES key, a 16-byte additional key, and a 16-byte nonce. The security of Poly1305-AES is very close to the security of AES; the security gap is at most 14D⌈L/16⌉/2106 if messages have at most L bytes, the attacker sees at most 264 authenticated messages, and the attacker attempts D forgeries. Poly1305-AES can be computed at extremely high speed: for example, fewer than 3.1l + 780 Athlon cycles for an ℓ-byte message. This speed is achieved without precomputation; consequently, 1000 keys can be handled simultaneously without cache misses. Special-purpose hardware can compute Poly1305-AES at even higher speed. Poly1305-AES is parallelizable, incremental, and not subject to any intellectual-property claims.},
+   keywords = {Fast Message
+Instruction Selection
+Message Authentication
+Secure Message Authentication
+Security Guarantee},
+   ISBN = {0302-9743},
+   DOI = {10.1007/11502760_3},
+   year = {2005},
+   type = {Book Section}
+}
+

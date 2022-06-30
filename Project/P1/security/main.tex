@@ -1,0 +1,44 @@
+\section{Security}
+\subsection{Security Guarantee}
+\subsubsection{Poly1305-AES}
+\paragraph{} As is described above, Poly1305-AES guarantees that for any attacker to find a pair of $(n, m, a)$ such that 
+$$
+a = \text{Poly1305}_r(m, \text{AES}_k(n)),
+$$
+the only way to break this is to break AES, aside from receiving authenticated messages $(n,m,a)$ sent by the sender. In other words, if the attacker failed to break AES, then any pair of $(n,m,a)$ that does not satisfy the above equation is discarded, and only authenticated messages are received.\\
+\par Besides securing that the messages are "meaningful" (in the context that the pair $(n,m,a)$ matches the equation), even if the attacker can see the authenticated messages from the sender, or the receiver accepts it or not, the security of Poly1305-AES is guaranteed if the attacker fails to fails to break AES.
+\par By the description mentioned in [7], there exists a quantitative representation of such guarantee of security. Let's make the following assumptions:
+\begin{enumerate}
+    \item The attacker sees at most $C$ authenticated messages from the sender.
+    \item The attacker attempts at most $D$ forgeries.
+    \item The attacker has a probability of at most $\delta$ to distinguish AES$_{k}$, assuming uniform random permutation.
+    \item All messages have length at most $L$.
+\end{enumerate}
+Then the attacker's chance of success is at most
+$$
+\text{chance}_{MAX} = \delta + 1.949 \times 8D \times \frac{L}{16} \times \frac{1}{2^{106}}
+$$
+\paragraph{}With a small value of $\delta$, the chance of Poly1305-AES to be broken is small too. If AES is broken, then another function should be applied to guarantee at least the same level of security.
+\subsubsection{HMAC}
+\paragraph{}HMAC is proved to be a pseudorandom function under the assumption that the compression function of the underlying hash function is a pseudorandom function. However, if HMAC is implemented with MD5 or SHA-1, this does not guarantee the security of HMAC. Usually, the cryptographic strength of HMAC depends on the size of secret key used. And by the common attack methods on HMAC, a successful attack depends on one of the following conditions:
+\begin{enumerate}
+    \item The attacker could coumpute the output of the compression function, even with initial vector unknown to the attacker (usually in brute force).
+    \item The attacker happens to find a collision in the hash functions.
+\end{enumerate}
+\subsection{Attack Methods}
+\subsubsection{Multiple forgery attack}
+\paragraph{} If we apply MAC with a common suffix but to two different messages, say, $A$ and $B$, we have:
+\begin{align*}
+    A &= P_1 || P_2 || ...||P_i||S_{i+1}||...||S_n\\
+    B &= Q_1 || Q_2 || ...||Q_i||S_{i+1}||...||S_n\\
+\end{align*}
+So, the attack attempts to find a pair of distinct prefixes $P$ and $Q$ that yields a common internal state, and by this definition, $P||S$ and $Q||S$ are called a colliding pair, and such pair have the same authentication tag. After that, we generate a forgery by requesting a tag for message $P||S^{'}$ (also the tag for $Q||S^{'}$), and the attack is implemented.
+\subsubsection{Side Channel Attacks}
+\paragraph{}In SCAs, the attackers gather information in side channel, such as power consumption, while the victim device is running cryptographic applications.
+\paragraph{} Usually, SCAs include the following two types of attacks:
+\begin{enumerate}
+    \item \textbf{simple power analysis (SPA)}\\
+    In this method, the attacker directly analyzes the power consumption by parsing it into a series of basic operations, like XOR, to recover the information behind it.
+    \item \textbf{differential power analysis (DPA)}\\
+    In this method, instead of directly operating the power consumption, the attacker usually uses statistical tools to analyze the mean, the average, the peak of power consumption for more detailed confirmation of the assumptions the attackers made previously.
+\end{enumerate}

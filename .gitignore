@@ -1,9 +1,24 @@
+# Object files
+obj/
 *.o
+
+# Latex compiled
 *.log
 *.aux
 *.out
+*.bbl
+*.bcf
+*.blg
+*.toc
+*.run.xml
+*-blx.bib
+svg-inkscape/
+
+# Temp
 *tmp*
-*test*
-Homework/H*/ex*/ex*
-obj/
+
+# Zip
 *.zip
+
+# Executable
+Homework/H*/ex*/ex*
