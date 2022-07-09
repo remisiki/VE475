@@ -12,6 +12,7 @@ obj/
 *.toc
 *.run.xml
 *-blx.bib
+Homework/H*/*.tex
 svg-inkscape/
 
 # Temp
@@ -22,3 +23,4 @@ svg-inkscape/
 
 # Executable
 Homework/H*/ex*/ex*
+Challenge/g2/cipher*/g2
