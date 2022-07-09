@@ -1,0 +1,120 @@
+#ifndef _TWOFISH_H_
+#define _TWOFISH_H_
+
+#include "utils.h"
+#include "sha256.h"
+
+/*
+	Twofish RS matrix
+*/
+static const uint8_t RS[] = {
+	0x01, 0xa4, 0x55, 0x87, 0x5a, 0x58, 0xdb, 0x9e,
+	0xa4, 0x56, 0x82, 0xf3, 0x1e, 0xc6, 0x68, 0xe5,
+	0x02, 0xa1, 0xfc, 0xc1, 0x47, 0xae, 0x3d, 0x19,
+	0xa4, 0x55, 0x87, 0x5a, 0x58, 0xdb, 0x9e, 0x03
+};
+
+/*
+	Twofish MDS matrix
+*/
+static const uint8_t MDS[] = {
+	0x01, 0xef, 0x5b, 0x5b,
+	0x5b, 0xef, 0xef, 0x01,
+	0xef, 0x5b, 0x01, 0xef,
+	0xef, 0x01, 0xef, 0x5b
+};
+
+/*
+	Twofish rho polynomial
+*/
+static const uint32_t RHO = 0x1010101;
+
+static const uint8_t Q[2][4][16] = {
+	{
+		{0x8, 0x1, 0x7, 0xd, 0x6, 0xf, 0x3, 0x2, 0x0, 0xb, 0x5, 0x9, 0xe, 0xc, 0xa, 0x4},
+		{0xe, 0xc, 0xb, 0x8, 0x1, 0x2, 0x3, 0x5, 0xf, 0x4, 0xa, 0x6, 0x7, 0x0, 0x9, 0xd},
+		{0xb, 0xa, 0x5, 0xe, 0x6, 0xd, 0x9, 0x0, 0xc, 0x8, 0xf, 0x3, 0x2, 0x4, 0x7, 0x1},
+		{0xd, 0x7, 0xf, 0x4, 0x1, 0x2, 0x6, 0xe, 0x9, 0xb, 0x3, 0x0, 0x8, 0x5, 0xc, 0xa}
+	},
+
+	{
+		{0x2, 0x8, 0xb, 0xd, 0xf, 0x7, 0x6, 0xe, 0x3, 0x1, 0x9, 0x4, 0x0, 0xa, 0xc, 0x5},
+		{0x1, 0xe, 0x2, 0xb, 0x4, 0xc, 0x3, 0x7, 0x6, 0xd, 0xa, 0x5, 0xf, 0x9, 0x0, 0x8},
+		{0x4, 0xc, 0x7, 0x5, 0x1, 0x6, 0x9, 0xa, 0x0, 0xe, 0xd, 0x8, 0x2, 0xb, 0x3, 0xf},
+		{0xb, 0x9, 0x5, 0x1, 0xc, 0x3, 0xd, 0xe, 0x6, 0x4, 0x7, 0xf, 0x2, 0x0, 0x8, 0xa}
+	}
+};
+
+/*
+	Hash the plain key using SHA-256.
+	REQUIRES: b of any length
+	RETURNS:  array of length 16 (8-bit words = 128 bits)
+*/
+uint8_t* hashKey(const Buffer b);
+
+/*
+	Calculate key generator lists.
+	REQUIRES: key buffer of length 16 (8-bit words = 128 bits)
+	RETURNS:  M[4], S[2]
+*/
+KeyGenerator scheduleKeyGenerator(Buffer b);
+
+/*
+	Twofish key scheduler.
+	REQUIRES: key generator from scheduleKeyGenerator()
+	RETURNS:  40 expanded keys (K[40])
+*/
+uint32_t* scheduleKey(KeyGenerator keyGenerator);
+
+/*
+	Twofish q matrix permutation.
+	REQUIRES: x to be permutated;
+	          type = 0 -> q[0];
+	          type = 1 -> q[1]
+	RETURNS:  Permutated x
+*/
+uint8_t twofishPermutation(uint8_t x, size_t type);
+
+/*
+	Twofish h(x, list) function.
+	REQUIRES: length must be same as length of list 
+*/
+uint32_t twofishFunctionH(const uint32_t x, const uint32_t* list, const size_t length);
+
+/*
+	Twofish g(x, S) function.
+	REQUIRES: s be the S[2] from scheduleKeyGenerator()
+*/
+uint32_t twofishFunctionG(const uint32_t x, const uint32_t* s);
+
+/*
+	Twofish f() function.
+	REQUIRES: f_in be the pair of two inputs;
+	          round be the round index;
+	          s be the S[2] from scheduleKeyGenerator();
+	          keys be keys from scheduleKey();
+	RETURNS:  Pair of two outputs
+*/
+Pair twofishFunctionF(const Pair f_in, const size_t round, const uint32_t* s, const uint32_t* keys);
+
+/*
+	Twofish encryption.
+	REQUIRES: p be plain text array of any length, must be ASCII string;
+	          length must be same as lenght of p;
+	          keys be keys from scheduleKey();
+	          s be the S[2] from scheduleKeyGenerator();
+	RETURNS:  Buffer of cipher text as hex
+*/
+Buffer twofishEncrypt(const uint8_t* p, const size_t length, const uint32_t* keys, const uint32_t* s);
+
+/*
+	Twofish decryption.
+	REQUIRES: c be cipher text array of any length, must be hex string;
+	          length must be same as lenght of c;
+	          keys be keys from scheduleKey();
+	          s be the S[2] from scheduleKeyGenerator();
+	RETURNS:  Buffer of plain text as hex
+*/
+Buffer twofishDecrypt(const uint8_t* c, const size_t length, const uint32_t* keys, const uint32_t* s);
+
+#endif
