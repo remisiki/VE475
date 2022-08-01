@@ -2,7 +2,7 @@
 obj/
 *.o
 
-# Latex compiled
+# Latex
 *.log
 *.aux
 *.out
@@ -11,8 +11,8 @@ obj/
 *.blg
 *.toc
 *.run.xml
-*-blx.bib
-Homework/H*/*.tex
+*.bib
+*.tex
 svg-inkscape/
 
 # Temp
